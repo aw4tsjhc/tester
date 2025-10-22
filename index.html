@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tâm thư bí mật 💌</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
 body {
   font-family: 'Poppins', sans-serif;
@@ -30,7 +30,7 @@ body {
 }
 
 .card {
-  background: white;
+  background: rgba(255,255,255,0.9);
   padding: 40px 30px;
   border-radius: 20px;
   box-shadow: 0 8px 20px rgba(255, 0, 90, 0.15);
@@ -45,18 +45,13 @@ body {
   to { opacity: 1; transform: scale(1); }
 }
 
+/* ✨ Title đơn giản hơn */
 h2 {
-  font-family: 'Great Vibes', cursive;
-  font-size: 2.4em;
-  background: linear-gradient(45deg, #ff4d8f, #ff94c2, #ff4d8f);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: glow 2.5s infinite alternate;
-}
-
-@keyframes glow {
-  from { text-shadow: 0 0 10px rgba(255,77,143,0.3); }
-  to { text-shadow: 0 0 25px rgba(255,77,143,0.7); }
+  font-weight: 600;
+  font-size: 1.8em;
+  color: #ff4d8f;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
 }
 
 input {
@@ -100,24 +95,30 @@ button:hover {
   100%{transform:scale(1);} 
 }
 
-/* 💕 Trái tim bay */
+/* 💕 Tim bay toàn màn hình */
 .heart-float {
   position: fixed;
   color: #ff4d8f;
   opacity: 0.8;
-  animation: floatUp 6s linear forwards;
+  animation: floatCrazy 4s linear forwards;
   z-index: 1;
   pointer-events: none;
 }
-@keyframes floatUp {
-  0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
-  100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+@keyframes floatCrazy {
+  0% {
+    transform: translate(var(--start-x), 100vh) scale(0.5) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--end-x), -10vh) scale(1.2) rotate(360deg);
+    opacity: 0;
+  }
 }
 </style>
 </head>
 <body>
   <div class="card">
-    <h2>💗 Tâm thư bí mật 💗</h2>
+    <h2>Tâm thư bí mật 💌</h2>
     <p>Nhập tên của bạn để mở khóa:</p>
     <input id="nameInput" type="text" placeholder="Nhập tên (VD: Nguyễn Văn A)" />
     <button id="submitBtn">Gửi</button>
@@ -125,11 +126,9 @@ button:hover {
   </div>
 
   <script>
-  // 💌 Link Formspree
   const FORMSPREE_URL = "https://formspree.io/f/xqayveoq";
 
   const MESSAGES = {
-    "Nguyễn Thị Diễm Kiều":" Vô game ",
     "Nguyễn Ngọc Quỳnh Nga": `WOW!! Sao bạn biết cái tên này? Hay bạn là người đó 😳 
 Mình biết bạn có xem story của mình nên mình mới làm cái này dành riêng cho bạn đấy 💌 
 Nếu 1 ngày nào đó bạn có thể mở lòng, không cần phải là người nhắn trước, 
@@ -152,18 +151,19 @@ hãy thả tim vào story của mình — nhất định mình sẽ tìm bạn!!
   const btn = document.getElementById('submitBtn');
   const result = document.getElementById('result');
 
-  // 💞 Tạo hiệu ứng tim bay
+  // 💞 Tim bay nhanh khắp màn hình
   function createHeart() {
     const heart = document.createElement('div');
     heart.classList.add('heart-float');
     heart.innerHTML = ['💖','💗','💕','💞','💓'][Math.floor(Math.random()*5)];
-    heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.fontSize = 15 + Math.random() * 25 + 'px';
-    heart.style.animationDuration = 4 + Math.random() * 4 + 's';
+    heart.style.setProperty('--start-x', Math.random() * 100 + 'vw');
+    heart.style.setProperty('--end-x', Math.random() * 100 + 'vw');
+    heart.style.fontSize = 12 + Math.random() * 25 + 'px';
+    heart.style.animationDuration = 2.5 + Math.random() * 2 + 's';
     document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 8000);
+    setTimeout(() => heart.remove(), 5000);
   }
-  setInterval(createHeart, 300);
+  setInterval(createHeart, 150);
 
   btn.addEventListener('click', async () => {
     const name = input.value.trim();

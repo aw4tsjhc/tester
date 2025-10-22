@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tâm thư bí mật 💌</title>
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(120deg, #f9d6e2, #ffe6f0);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 20px;
+}
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  max-width: 400px;
+}
+input {
+  padding: 10px;
+  width: 100%;
+  font-size: 16px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+button {
+  padding: 10px 16px;
+  background: #ff6fa8;
+  border: none;
+  color: white;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:hover {
+  background: #ff4d8f;
+}
+.hidden { display: none; }
+.heart { color: #ff4d8f; animation: pulse 1s infinite; }
+@keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.2);}100%{transform:scale(1);} }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h2>💗 Tâm thư bí mật 💗</h2>
+    <p>Nhập tên của bạn để mở khóa:</p>
+    <input id="nameInput" type="text" placeholder="Nhập tên (VD: Nguyễn Văn A)" />
+    <button id="submitBtn">Gửi</button>
+    <div id="result" class="hidden"></div>
+  </div>
+
+  <script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxUgqSj9MaAdNS3cmIT7scCpncXlKmaHkYA6WsJJP6f0wgGqiKqj74OY0nHIei0gmRy/exec";
+
+  const SECRET_NAME = "Nguyễn Ngọc Quỳnh Nga";
+
+  const input = document.getElementById('nameInput');
+  const btn = document.getElementById('submitBtn');
+  const result = document.getElementById('result');
+
+  btn.addEventListener('click', async () => {
+    const name = input.value.trim();
+    if (!name) return alert("Vui lòng nhập tên nha 💬");
+
+    const match = name.toLowerCase() === SECRET_NAME.toLowerCase();
+    const resText = match 
+      ? `💌 Gửi đến ${name}:<br><br>“Em luôn nhớ anh, dù chẳng nói ra...”<br><br><span class='heart'>💖</span>`
+      : `Sai rồi nha 💔`;
+
+    result.classList.remove('hidden');
+    result.innerHTML = `<p>${resText}</p>`;
+
+    // gửi dữ liệu về Google Sheet
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({ name: name, result: match ? "Đúng" : "Sai" }),
+      headers: { "Content-Type": "application/json" }
+    });
+
+    if (match) {
+      input.style.display = "none";
+      btn.style.display = "none";
+    }
+  });
+  </script>
+</body>
+</html>

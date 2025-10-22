@@ -107,8 +107,8 @@ button:hover {
   </div>
 
   <script>
-  // ⚙️ Dán API URL của bạn từ SheetDB.io
-  const SHEETDB_URL = "https://sheetdb.io/api/v1/abcd1234xyz";
+  // ⚙️ Dán link Formspree của bạn tại đây
+  const FORMSPREE_URL = "https://formspree.io/f/xxxxxxx"; // 👈 Thay bằng link của bạn
 
   // 💌 Danh sách tên & lời nhắn riêng
   const MESSAGES = {
@@ -137,22 +137,18 @@ button:hover {
     result.classList.remove('hidden');
     result.innerHTML = `<p>${resText}</p>`;
 
-    // 📊 Gửi dữ liệu đến SheetDB
+    // 📤 Gửi dữ liệu đến Formspree
     try {
-      await fetch(SHEETDB_URL, {
+      await fetch(FORMSPREE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          data: [
-            {
-              name: name,
-              result: match ? "Đúng" : "Sai",
-              time: new Date().toLocaleString("vi-VN")
-            }
-          ]
+          name: name,
+          result: match ? "Đúng" : "Sai",
+          time: new Date().toLocaleString("vi-VN")
         })
       });
-      console.log("✅ Gửi dữ liệu thành công:", name);
+      console.log("✅ Đã gửi đến Formspree:", name);
     } catch (err) {
       console.error("❌ Lỗi gửi dữ liệu:", err);
     }

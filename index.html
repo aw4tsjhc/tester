@@ -107,8 +107,8 @@ button:hover {
   </div>
 
   <script>
-  // ⚙️ Dán URL Web App của bạn
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwa6RiKv6C7nafyc2Zqikh39wO39SO_YWME6Ki2E4t1d-8fqVqejC38se0VBbeO6AXf/exec";
+  // ⚙️ Dán API URL của bạn từ SheetDB.io
+  const SHEETDB_URL = "https://sheetdb.io/api/v1/abcd1234xyz";
 
   // 💌 Danh sách tên & lời nhắn riêng
   const MESSAGES = {
@@ -137,16 +137,19 @@ button:hover {
     result.classList.remove('hidden');
     result.innerHTML = `<p>${resText}</p>`;
 
-    // 📊 Gửi dữ liệu về Google Sheet
+    // 📊 Gửi dữ liệu đến SheetDB
     try {
-      await fetch(SCRIPT_URL, {
+      await fetch(SHEETDB_URL, {
         method: "POST",
-        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          name: name, 
-          result: match ? "Đúng" : "Sai",
-          time: new Date().toLocaleString("vi-VN")
+        body: JSON.stringify({
+          data: [
+            {
+              name: name,
+              result: match ? "Đúng" : "Sai",
+              time: new Date().toLocaleString("vi-VN")
+            }
+          ]
         })
       });
       console.log("✅ Gửi dữ liệu thành công:", name);

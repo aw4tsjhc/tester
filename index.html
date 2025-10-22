@@ -18,6 +18,7 @@ body {
   align-items: center;
   flex-direction: column;
   text-align: center;
+  overflow: hidden;
   padding: 20px;
 }
 
@@ -34,6 +35,7 @@ body {
   box-shadow: 0 8px 20px rgba(255, 0, 90, 0.15);
   max-width: 420px;
   animation: fadeIn 1.2s ease;
+  z-index: 2;
 }
 
 @keyframes fadeIn {
@@ -95,6 +97,20 @@ button:hover {
   50%{transform:scale(1.3);} 
   100%{transform:scale(1);} 
 }
+
+/* 💕 Trái tim bay */
+.heart-float {
+  position: fixed;
+  color: #ff4d8f;
+  font-size: 20px;
+  opacity: 0.8;
+  animation: floatUp 6s linear infinite;
+  z-index: 1;
+}
+@keyframes floatUp {
+  0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
+  100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+}
 </style>
 </head>
 <body>
@@ -107,40 +123,47 @@ button:hover {
   </div>
 
   <script>
-  // ⚙️ Link Formspree của bạn
+  // ⚙️ Link Formspree
   const FORMSPREE_URL = "https://formspree.io/f/xqayveoq";
 
   // 💌 Danh sách tên & lời nhắn riêng
-const MESSAGES = {
-  "Nguyễn Thị Diễm Kiều" : "Mianhae! Vô game nhận 2000kc",
-  "Phạm Ngọc Thảo Hương" : "Nothing..!! =))))",
-  "Trần Dĩ Khang" : "Có con cặc gì đâu thằng lồn, biến!!",
-  "Nguyễn Ngọc Quỳnh Nga": `WOW!! Sao bạn biết cái tên này? Hay bạn là người đó 😳 
+  const MESSAGES = {
+    "Nguyễn Thị Diễm Kiều" : "Gâu gâu Gâu gâu Gâu gâu",
+    "Phạm Ngọc Thảo Hương" : "Nothing..!! =))))",
+    "Trần Dĩ Khang" : "Có con cặc gì đâu thằng lồn, biến!!",
+    "Nguyễn Ngọc Quỳnh Nga": `WOW!! Sao bạn biết cái tên này? Hay bạn là người đó 😳 
 Thật ra mình biết bạn có xem story của mình nên mình mới làm cái này dành riêng cho bạn đấy 💌 
 Mình thật sự thích bạn! Nếu 1 ngày nào đó bạn có thể mở lòng, không cần phải là người nhắn trước, 
 hãy thả tim vào story của mình — nhất định mình sẽ tìm bạn!!! ❤️`,
-  "Trần Hiểu Băng" : "Hiểu Băng đẹp gái, chúc bạn 1 ngày vuiii =)))",
-  "Trương Diễm My": "Diễm My xinh gái thua Ngọc Diệp",
-  "Danh Hồng Đức": "Người đàn bà có cây cà lem si cu la",
-  "Nguyễn Tiến Phú": "Sĩ vương đại đế!!!",
-  "Nguyễn Đức Anh" :"Cốt ruột 1 mí, phải ông là con gái là tui lụm ông rồi",
-  "Lê Trần Gia Huy": "LÒ VI SÓNG",
-  "Trần Thị Yến Phương": "Người yêu cũ xinh nhất",
-  "Trần Văn Liêm":"Nhớ người yêu cũ hả fen",
-  "Nguyễn Thành Nhớ":"Về đây anh bao cho 1 tuần đi ăn bún đậu",
-  "Lê Sanh Phú":"Lê Sanh Phú - không gái gu, dùng tiền đô - làm phòng thủ ",
-  "Nguyễn Đình Phương Thảo": "Nữ chiến sĩ xinh đẹp!!!",
-  "Bùi Lan Phương":"Bạn nói tui có tư tưởng ấu dâm nên tui xin phép không viết gì cho bạn",
-  "Võ Văn Kỹ":"cái thằng beta này, phắn ngayyy",
-  "Nguyễn Minh Trí":"Chúc luật sư thành công mạnh mẽ nhee!!",
-  "Võ Ngọc Diệp":"CÓ CON CẶC GÌ ĐÂU",
-  "Trần Hải Đăng":"Hải Đăng Doo, bỏ con bài raz sp đi em"
-};
+    "Trần Hiểu Băng" : "Hiểu Băng đẹp gái, chúc bạn 1 ngày vuiii =)))",
+    "Trương Diễm My": "Diễm My xinh gái thua Ngọc Diệp",
+    "Danh Hồng Đức": "Người đàn bà có cây cà lem si cu la",
+    "Nguyễn Tiến Phú": "Sĩ vương đại đế!!!",
+    "Nguyễn Đức Anh" :"Cốt ruột 1 mí, phải ông là con gái là tui lụm ông rồi",
+    "Lê Trần Gia Huy": "LÒ VI SÓNG",
+    "Trần Thị Yến Phương": "Người yêu cũ xinh nhất",
+    "Trần Văn Liêm":"Nhớ người yêu cũ hả fen",
+    "Nguyễn Thành Nhớ":"Về đây anh bao cho 1 tuần đi ăn bún đậu"
+  };
 
   const input = document.getElementById('nameInput');
   const btn = document.getElementById('submitBtn');
   const result = document.getElementById('result');
 
+  // 🌸 Hiệu ứng trái tim bay
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart-float');
+    heart.innerHTML = '💖';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.animationDuration = (4 + Math.random() * 3) + 's';
+    heart.style.fontSize = (14 + Math.random() * 20) + 'px';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+  }
+  setInterval(createHeart, 400);
+
+  // 💬 Xử lý khi nhấn gửi
   btn.addEventListener('click', async () => {
     const name = input.value.trim();
     if (!name) return alert("Vui lòng nhập tên nha 💬");

@@ -20,6 +20,7 @@ body {
   text-align: center;
   overflow: hidden;
   padding: 20px;
+  position: relative;
 }
 
 @keyframes gradientMove {
@@ -35,7 +36,8 @@ body {
   box-shadow: 0 8px 20px rgba(255, 0, 90, 0.15);
   max-width: 420px;
   animation: fadeIn 1.2s ease;
-  z-index: 2;
+  z-index: 10;
+  position: relative;
 }
 
 @keyframes fadeIn {
@@ -102,10 +104,10 @@ button:hover {
 .heart-float {
   position: fixed;
   color: #ff4d8f;
-  font-size: 20px;
   opacity: 0.8;
-  animation: floatUp 6s linear infinite;
+  animation: floatUp 6s linear forwards;
   z-index: 1;
+  pointer-events: none;
 }
 @keyframes floatUp {
   0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
@@ -123,47 +125,46 @@ button:hover {
   </div>
 
   <script>
-  // ⚙️ Link Formspree
+  // 💌 Link Formspree
   const FORMSPREE_URL = "https://formspree.io/f/xqayveoq";
 
-  // 💌 Danh sách tên & lời nhắn riêng
   const MESSAGES = {
-    "Nguyễn Thị Diễm Kiều" : "Gâu gâu Gâu gâu Gâu gâu",
-    "Phạm Ngọc Thảo Hương" : "Nothing..!! =))))",
-    "Trần Dĩ Khang" : "Có con cặc gì đâu thằng lồn, biến!!",
+    "Nguyễn Thị Diễm Kiều":" Vô game ",
     "Nguyễn Ngọc Quỳnh Nga": `WOW!! Sao bạn biết cái tên này? Hay bạn là người đó 😳 
-Thật ra mình biết bạn có xem story của mình nên mình mới làm cái này dành riêng cho bạn đấy 💌 
-Mình thật sự thích bạn! Nếu 1 ngày nào đó bạn có thể mở lòng, không cần phải là người nhắn trước, 
+Mình biết bạn có xem story của mình nên mình mới làm cái này dành riêng cho bạn đấy 💌 
+Nếu 1 ngày nào đó bạn có thể mở lòng, không cần phải là người nhắn trước, 
 hãy thả tim vào story của mình — nhất định mình sẽ tìm bạn!!! ❤️`,
-    "Trần Hiểu Băng" : "Hiểu Băng đẹp gái, chúc bạn 1 ngày vuiii =)))",
+    "Trần Dĩ Khang": "Có con cặc gì đâu thằng lồn, biến!!",
+    "Phạm Ngọc Thảo Hương": "Nothing..!! =))))",
+    "Nguyễn Thị Diễm Kiều": "Gâu gâu Gâu gâu Gâu gâu",
+    "Trần Hiểu Băng": "Hiểu Băng đẹp gái, chúc bạn 1 ngày vuiii =)))",
     "Trương Diễm My": "Diễm My xinh gái thua Ngọc Diệp",
     "Danh Hồng Đức": "Người đàn bà có cây cà lem si cu la",
     "Nguyễn Tiến Phú": "Sĩ vương đại đế!!!",
-    "Nguyễn Đức Anh" :"Cốt ruột 1 mí, phải ông là con gái là tui lụm ông rồi",
+    "Nguyễn Đức Anh": "Cốt ruột 1 mí, phải ông là con gái là tui lụm ông rồi",
     "Lê Trần Gia Huy": "LÒ VI SÓNG",
     "Trần Thị Yến Phương": "Người yêu cũ xinh nhất",
-    "Trần Văn Liêm":"Nhớ người yêu cũ hả fen",
-    "Nguyễn Thành Nhớ":"Về đây anh bao cho 1 tuần đi ăn bún đậu"
+    "Trần Văn Liêm": "Nhớ người yêu cũ hả fen",
+    "Nguyễn Thành Nhớ": "Về đây anh bao cho 1 tuần đi ăn bún đậu"
   };
 
   const input = document.getElementById('nameInput');
   const btn = document.getElementById('submitBtn');
   const result = document.getElementById('result');
 
-  // 🌸 Hiệu ứng trái tim bay
+  // 💞 Tạo hiệu ứng tim bay
   function createHeart() {
     const heart = document.createElement('div');
     heart.classList.add('heart-float');
-    heart.innerHTML = '💖';
+    heart.innerHTML = ['💖','💗','💕','💞','💓'][Math.floor(Math.random()*5)];
     heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.animationDuration = (4 + Math.random() * 3) + 's';
-    heart.style.fontSize = (14 + Math.random() * 20) + 'px';
+    heart.style.fontSize = 15 + Math.random() * 25 + 'px';
+    heart.style.animationDuration = 4 + Math.random() * 4 + 's';
     document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 6000);
+    setTimeout(() => heart.remove(), 8000);
   }
-  setInterval(createHeart, 400);
+  setInterval(createHeart, 300);
 
-  // 💬 Xử lý khi nhấn gửi
   btn.addEventListener('click', async () => {
     const name = input.value.trim();
     if (!name) return alert("Vui lòng nhập tên nha 💬");
@@ -179,7 +180,6 @@ hãy thả tim vào story của mình — nhất định mình sẽ tìm bạn!!
     result.classList.remove('hidden');
     result.innerHTML = `<p>${resText}</p>`;
 
-    // 📤 Gửi dữ liệu về Formspree
     try {
       await fetch(FORMSPREE_URL, {
         method: "POST",
@@ -190,9 +190,8 @@ hãy thả tim vào story của mình — nhất định mình sẽ tìm bạn!!
           time: new Date().toLocaleString("vi-VN")
         })
       });
-      console.log("✅ Gửi Formspree thành công:", name);
     } catch (err) {
-      console.error("❌ Lỗi gửi Formspree:", err);
+      console.error("❌ Formspree lỗi:", err);
     }
 
     if (match) {

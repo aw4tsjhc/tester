@@ -5,9 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tâm thư bí mật 💌</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap');
+
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(120deg, #f9d6e2, #ffe6f0);
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(-45deg, #ffb6c1, #ffe6f0, #f9d6e2, #ffd1e8);
+  background-size: 400% 400%;
+  animation: gradientMove 10s ease infinite;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -16,13 +20,41 @@ body {
   text-align: center;
   padding: 20px;
 }
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .card {
   background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  max-width: 400px;
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(255, 0, 90, 0.15);
+  max-width: 420px;
+  animation: fadeIn 1.2s ease;
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+h2 {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.4em;
+  background: linear-gradient(45deg, #ff4d8f, #ff94c2, #ff4d8f);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: glow 2.5s infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 10px rgba(255,77,143,0.3); }
+  to { text-shadow: 0 0 25px rgba(255,77,143,0.7); }
+}
+
 input {
   padding: 10px;
   width: 100%;
@@ -31,21 +63,38 @@ input {
   border: 1px solid #ccc;
   border-radius: 6px;
 }
+
 button {
   padding: 10px 16px;
-  background: #ff6fa8;
+  background: linear-gradient(45deg, #ff6fa8, #ff4d8f);
   border: none;
   color: white;
   border-radius: 6px;
   font-size: 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 button:hover {
-  background: #ff4d8f;
+  transform: scale(1.05);
+  box-shadow: 0 0 12px rgba(255,77,143,0.5);
 }
 .hidden { display: none; }
-.heart { color: #ff4d8f; animation: pulse 1s infinite; }
-@keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.2);}100%{transform:scale(1);} }
+
+#result {
+  margin-top: 20px;
+  font-size: 1.1em;
+  animation: fadeIn 1s ease;
+}
+
+.heart {
+  color: #ff4d8f;
+  animation: pulse 1.2s infinite;
+}
+@keyframes pulse { 
+  0%{transform:scale(1);} 
+  50%{transform:scale(1.3);} 
+  100%{transform:scale(1);} 
+}
 </style>
 </head>
 <body>
@@ -58,9 +107,16 @@ button:hover {
   </div>
 
   <script>
+  // ⚙️ Dán URL Web App của bạn
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQuL4ggJ9qcorFUqWxfCV4zVrGGYICYXDsg16C24fkQHQupts5Rp9-OqKPA9r8SD0t/exec";
 
-  const SECRET_NAME = "Nguyễn Ngọc Quỳnh Nga";
+  // 💌 Danh sách tên & lời nhắn riêng
+  const MESSAGES = {
+    "Nguyễn Ngọc Quỳnh Nga": "Em là điều ngọt ngào nhất mà anh từng có 💖",
+    "Nguyễn Văn A": "Cảm ơn vì đã luôn ở bên tôi dù khó khăn nhất 🌸",
+    "Trần Thị B": "Cuộc sống có em là điều kỳ diệu 💫",
+    "Lê Văn C": "Không phải ai cũng hiểu, nhưng tôi biết ơn vì bạn hiểu 💌",
+  };
 
   const input = document.getElementById('nameInput');
   const btn = document.getElementById('submitBtn');
@@ -70,20 +126,33 @@ button:hover {
     const name = input.value.trim();
     if (!name) return alert("Vui lòng nhập tên nha 💬");
 
-    const match = name.toLowerCase() === SECRET_NAME.toLowerCase();
+    const lowerName = name.toLowerCase();
+    const foundKey = Object.keys(MESSAGES).find(k => k.toLowerCase() === lowerName);
+    const match = !!foundKey;
+
     const resText = match 
-      ? `💌 Gửi đến ${name}:<br><br>“Em luôn nhớ anh, dù chẳng nói ra...”<br><br><span class='heart'>💖</span>`
+      ? `💌 Gửi đến ${name}:<br><br>“${MESSAGES[foundKey]}”<br><br><span class='heart'>💖</span>`
       : `Sai rồi nha 💔`;
 
     result.classList.remove('hidden');
     result.innerHTML = `<p>${resText}</p>`;
 
-    // gửi dữ liệu về Google Sheet
-    await fetch(SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify({ name: name, result: match ? "Đúng" : "Sai" }),
-      headers: { "Content-Type": "application/json" }
-    });
+    // 📊 Gửi dữ liệu về Google Sheet
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          name: name, 
+          result: match ? "Đúng" : "Sai",
+          time: new Date().toLocaleString("vi-VN")
+        })
+      });
+      console.log("✅ Gửi dữ liệu thành công:", name);
+    } catch (err) {
+      console.error("❌ Lỗi gửi dữ liệu:", err);
+    }
 
     if (match) {
       input.style.display = "none";
